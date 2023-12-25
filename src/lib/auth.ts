@@ -35,22 +35,22 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      const dbUser = (await db.get(`user:${token.id}`)) as User | null
-
+      const dbUser = (await db.get(`user:${token.id}`)) as User | null;
+    
       if (!dbUser) {
         if (user) {
-          token.id = user!.id
+          token.id = user.id || token.id; // Use token.id if user.id is undefined
         }
-
-        return token
+    
+        return token;
       }
-
+    
       return {
         id: dbUser.id,
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
-      }
+      };
     },
     async session({ session, token }) {
       if (token) {

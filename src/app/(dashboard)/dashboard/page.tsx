@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import Button from '../../Components/ui/Button'
+import Button from '../../../Components/ui/Button'
 
 interface pageProps {
   
