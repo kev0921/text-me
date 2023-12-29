@@ -1,12 +1,14 @@
+import AddFriendButton from '@/Components/AddFriendButton'
+import { authOptions } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
 import { FC } from 'react'
-import Button from '../../../Components/ui/Button'
 
-interface pageProps {
+const page = async ({}) => {
   
-}
+  const session = await getServerSession(authOptions)
 
-const page: FC<pageProps> = ({}) => {
-  return <Button>hello</Button>
+  return <pre>{JSON.stringify(session)}</pre>
+
 }
 
 export default page

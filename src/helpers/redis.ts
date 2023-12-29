@@ -1,5 +1,5 @@
 const upstashRedisRestUrl = process.env.UPSTASH_REDIS_REST_URL
-const authtoken = process.env.UPSTASH_REDUS_REST_TOKEN
+const authtoken = process.env.UPSTASH_REDIS_REST_TOKEN
 
 type Command = 'zraange' | 'sismember' | 'get' | 'smembers'
 
@@ -14,8 +14,8 @@ export async function fetchRedis(   // this function helps us interact with the 
                 Authorization: `Bearer ${authtoken}`,  // need to tell upstash we are authorized to make this querry to the database
             },
             cache: 'no-store',   // tell Next.js to never store the result and always delivering fresh data
-        }
-    )
+        })
+        
     if(!response.ok) {
         throw new Error(`Error executing Redis command: ${response.statusText}`)
     }
