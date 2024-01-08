@@ -35,7 +35,7 @@ const Layout = async ({ children }: LayoutProps) => {
   const session = await getServerSession(authOptions)
   if (!session) notFound()
 
-  const friends = await getFriendsByUserId(session.user.id)
+  const friends = await getFriendsByUserId(session.user.id)  // get all the friends by id
 
   const unseenRequestCount = (
     (await fetchRedis(
@@ -51,7 +51,7 @@ const Layout = async ({ children }: LayoutProps) => {
           <Icons.Logo className='h-8 w-auto text-indigo-600' />
         </Link>
 
-        {friends.length > 0 ? (
+        {friends.length > 0 ? (  // only render the chats if the user has friends to chat with
           <div className='text-xs font-semibold leading-6 text-gray-400'>
             Your chats
           </div>

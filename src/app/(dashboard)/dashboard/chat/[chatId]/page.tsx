@@ -1,3 +1,5 @@
+import ChatInput from '@/Components/ChatInput'
+import Messages from '@/Components/Messages'
 import { fetchRedis } from '@/helpers/redis'
 import { authOptions } from '@/lib/auth'
 import { messageArrayValidator } from '@/lib/validations/message'
@@ -32,20 +34,20 @@ interface PageProps {
   }
 }
 
-async function getChatMessages(chatId: string) {
+async function getChatMessages(chatId: string) { // fetches all messages using zrange (gets all messages in a certain chat room)
   try {
-    const results: string[] = await fetchRedis(
+    const results: string[] = await fetchRedis( // get a json string of the messages
       'zrange',
-      `chat:${chatId}:messages`,
-      0,
+      `chat:${chatId}:messages`,  // fetch the messages from that chat id
+      0,   // fetch from start index of 0 to the end index of -1
       -1
     )
 
-    const dbMessages = results.map((message) => JSON.parse(message) as Message)
+    const dbMessages = results.map((message) => JSON.parse(message) as Message) // get messages ordered in terms of when it was sent (most recent message at the top)
 
-    const reversedDbMessages = dbMessages.reverse()
+    const reversedDbMessages = dbMessages.reverse() // display the messages in reverse order since we want the most recent messages to be shown on the bottom of the chat (reverse() is an array method)
 
-    const messages = messageArrayValidator.parse(reversedDbMessages)
+    const messages = messageArrayValidator.parse(reversedDbMessages)  // validate these messages to ensure that they are in the format we expect.
 
     return messages
   } catch (error) {
@@ -54,27 +56,26 @@ async function getChatMessages(chatId: string) {
 }
 
 const page = async ({ params }: PageProps) => {
-  const { chatId } = params
-  const session = await getServerSession(authOptions)
-  if (!session) notFound()
+  const { chatId } = params     // destructure the chatId
+  const session = await getServerSession(authOptions)  // get the session
+  if (!session) notFound()           
 
-  const { user } = session
+  const { user } = session     // destructure the user
 
-  const [userId1, userId2] = chatId.split('--')
+  const [userId1, userId2] = chatId.split('--')   // get the userId1 and userId2 from the chatId in the url
 
   if (user.id !== userId1 && user.id !== userId2) {
-    notFound()
+    notFound()           // your id has to be one of the user ids
   }
 
-  const chatPartnerId = user.id === userId1 ? userId2 : userId1
-  // new
-
+  const chatPartnerId = user.id === userId1 ? userId2 : userId1  // determine the id of the person you are chatting to
+  
   const chatPartnerRaw = (await fetchRedis(
     'get',
     `user:${chatPartnerId}`
   )) as string
-  const chatPartner = JSON.parse(chatPartnerRaw) as User
-  const initialMessages = await getChatMessages(chatId)
+  const chatPartner = JSON.parse(chatPartnerRaw) as User  // get the chatPartner (User object)
+  const initialMessages = await getChatMessages(chatId)   // makes a call to the database for just the chat messages
 
   return (
     <div className='flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]'>
@@ -103,6 +104,9 @@ const page = async ({ params }: PageProps) => {
           </div>
         </div>
       </div>
+
+      <Messages sessionId={session.user.id} initialMessages={initialMessages}/>
+      <ChatInput chatId={chatId} chatPartner={chatPartner} />
     </div>
   )
 }
