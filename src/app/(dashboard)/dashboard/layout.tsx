@@ -111,7 +111,7 @@ const Layout = async ({ children }: LayoutProps) => {
                 </div>
               </div>
 
-              <SignOutButton className='h-full aspect-square' />
+              <SignOutButton className='h-full aspect-square bg-gray-400' />
             </li>
           </ul>
         </nav>

@@ -43,7 +43,7 @@ export async function POST(req: Request) {  // handles a post request
 
         await db.sadd(`user:${session.user.id}:friends`, idToAdd)  // sadd will add someone to a set. Here, we're inserting the person that we want to add to our friends list.
         
-        await db.sadd(`user:${idToAdd}:friend`, session.user.id)  // Inserting the person that accepted the friend request to the requester's friends list.
+        await db.sadd(`user:${idToAdd}:friends`, session.user.id)  // Inserting the person that accepted the friend request to the requester's friends list.
 
         await db.srem(`user:${session.user.id}:incoming_friend_requests`, idToAdd) // srem will remove someone from a set. After accepting a friend request, we should remove the friend request from the incoming friend requests. 
 

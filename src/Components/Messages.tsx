@@ -3,17 +3,25 @@
 import { cn } from '@/lib/utils'
 import { Message } from '@/lib/validations/message'
 import { FC, useRef, useState } from 'react'
+import { format } from 'date-fns'
+import Image from 'next/image'
 
 interface messagesProps {
   initialMessages: Message[]
   sessionId: string
+  sessionImg: string | null | undefined
+  chatPartner: User
 }
 
-const messages: FC<messagesProps> = ({initialMessages, sessionId }) => {
+const messages: FC<messagesProps> = ({initialMessages, sessionId, chatPartner, sessionImg }) => {
 
     const [messages, setMessages] = useState<Message[]>(initialMessages) // put the messages in state, so that when user sends a message we can put it in state instead of having to refresh the page or something.
 
     const scrollDownRef = useRef<HTMLDivElement | null>(null)   // when we send a message we want to automatically scroll to that message so we need to store a reference to that place. 
+
+    const formatTimestamp = (timestamp: number) => {  // format the message time stamp (hour:minute)
+        return format(timestamp, 'HH:mm')
+    }
 
   return (
     <div 
@@ -42,9 +50,23 @@ const messages: FC<messagesProps> = ({initialMessages, sessionId }) => {
                         })}>
                             {message.text}{' '} 
                             <span className='ml-2 text-xs text-gray-400'> 
-                                {message.timestamp}
+                                {formatTimestamp(message.timestamp)}
                             </span>
                         </span>
+                    </div>
+
+                    <div className={cn('relative w-6 h-6', {
+                        'order-2': isCurrentUser,    // conditional styles: style only applies if true
+                        'order-1': !isCurrentUser, 
+                        'invisible': hasNextMessageFromSameUser,
+                        })}>
+                        <Image 
+                            fill
+                            src={isCurrentUser ? (sessionImg as string) : chatPartner.image} 
+                            alt='Profile picture'
+                            referrerPolicy='no-referrer'
+                            className='rounded-full'
+                        />
                     </div>
                 </div>
             </div>
