@@ -1,6 +1,8 @@
 import { fetchRedis } from "@/helpers/redis"
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
+import { pusherServer } from "@/lib/pusher"
+import { toPusherKey } from "@/lib/utils"
 import { addFriendValidator } from "@/lib/validations/add-friend"
 import { getServerSession } from "next-auth"
 import { z } from 'zod'
@@ -40,6 +42,15 @@ export async function POST(req: Request) {
         }
 
         // if all those checks pass, we have a valid request
+
+        await pusherServer.trigger( //
+            toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
+            'incoming_friend_requests',
+            {
+              senderId: session.user.id,
+              senderEmail: session.user.email,
+            }
+          )
 
         await db.sadd(`user:${idToAdd}:incoming_friend_requests`, session.user.id)   // the user that is logged in is going to be put into the incomming friend request list of the user they are trying to add (PUT request)
 
