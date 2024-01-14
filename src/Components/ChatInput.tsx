@@ -13,17 +13,17 @@ interface ChatInputProps {
 
 const ChatInput: FC<ChatInputProps> = ({chatPartner, chatId}) => {
 
-    const textareaRef = useRef<HTMLTextAreaElement | null>(null) // 
+    const textareaRef = useRef<HTMLTextAreaElement | null>(null) // store a reference of the text area so we can focus on the text area after sending a message.
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [input, setInput] = useState<string>('')
+    const [input, setInput] = useState<string>('')  // keep the text area input in state
 
     const sendMessage = async () => {
         setIsLoading(true)
 
         try {
-            await axios.post('/api/message/send', {text: input, chatId })
+            await axios.post('/api/message/send', {text: input, chatId }) // make a post request to the endpoint that handles the message sending. First arguement is the api endpoint and second argument is the data we are sending to that endpoint
             setInput('')  // clear the text input
-                textareaRef.current?.focus()
+                textareaRef.current?.focus() // after sending the message, it will focus right back to the input text area
         } catch {
             toast.error('Something went wrong. Please try again later')
         } finally {
@@ -36,12 +36,12 @@ const ChatInput: FC<ChatInputProps> = ({chatPartner, chatId}) => {
     <TextAreaAutosize ref={textareaRef} onKeyDown={(e) => {
         if(e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault()
-            sendMessage()
+            sendMessage()  // send message after pressing 'Enter'
         }
     }}
     rows={1}
     value={input}
-    onChange={(e) => setInput(e.target.value)}
+    onChange={(e) => setInput(e.target.value)} // e.target.value contains the text the user typed into the text area.
     placeholder={`Message ${chatPartner.name}`}
     className='block w-full resize-none border-0 bg-transparent text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:py-1.5 sm:text-sm sm:leading-6'
     />

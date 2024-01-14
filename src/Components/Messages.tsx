@@ -20,7 +20,7 @@ const messages: FC<messagesProps> = ({initialMessages, sessionId, chatPartner, s
     const scrollDownRef = useRef<HTMLDivElement | null>(null)   // when we send a message we want to automatically scroll to that message so we need to store a reference to that place. 
 
     const formatTimestamp = (timestamp: number) => {  // format the message time stamp (hour:minute)
-        return format(timestamp, 'HH:mm')
+        return format(timestamp, 'HH:mm')  // format function is from 'date-fns' package
     }
 
   return (
@@ -55,7 +55,7 @@ const messages: FC<messagesProps> = ({initialMessages, sessionId, chatPartner, s
                         </span>
                     </div>
 
-                    <div className={cn('relative w-6 h-6', {
+                    <div className={cn('relative w-6 h-6', {   // gives an image to each message sender in the chat
                         'order-2': isCurrentUser,    // conditional styles: style only applies if true
                         'order-1': !isCurrentUser, 
                         'invisible': hasNextMessageFromSameUser,
