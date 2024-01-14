@@ -43,7 +43,7 @@ export async function POST(req: Request) {
 
         // if all those checks pass, we have a valid request
 
-        await pusherServer.trigger( //
+        await pusherServer.trigger(  /////////////////////////////////
             toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
             'incoming_friend_requests',
             {

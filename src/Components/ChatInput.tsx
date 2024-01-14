@@ -18,6 +18,7 @@ const ChatInput: FC<ChatInputProps> = ({chatPartner, chatId}) => {
     const [input, setInput] = useState<string>('')  // keep the text area input in state
 
     const sendMessage = async () => {
+        if(!input) return  // if no text input, then we cannot send a message
         setIsLoading(true)
 
         try {
