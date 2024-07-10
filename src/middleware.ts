@@ -1,5 +1,4 @@
 // intercepts the login request by redirecting a logged in user to the dashboard instead of directing it to the log in page
-import { LucideLockKeyhole } from 'lucide-react'
 import { getToken } from 'next-auth/jwt'
 import { withAuth } from 'next-auth/middleware'
 import { NextResponse } from 'next/server'
